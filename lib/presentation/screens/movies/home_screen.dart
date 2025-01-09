@@ -59,6 +59,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
           floating: true,
           flexibleSpace: FlexibleSpaceBar(
             title: CustomAppbar(),
+            
           ),
         ),
 
@@ -75,7 +76,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                     MovieHorizontalListview(
                       movies: nowPlayingMovies,
                       title: 'En cines',
-                      subTitle: 'Lunes 20',
                       loadNextPage: () =>ref.read(nowPlayingMoviesProvider.notifier).loadNextPage()
                       
                     ),
