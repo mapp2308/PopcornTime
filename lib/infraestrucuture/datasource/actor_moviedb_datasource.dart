@@ -10,7 +10,7 @@ import 'package:dio/dio.dart'; // Importa Dio, la librería para hacer peticione
 
 class ActorMovieDbDatasource extends ActorsDatasource {
 
-  // Instancia de Dio para hacer las peticiones HTTP a la API de TMDb.
+  //Instancia de Dio para hacer las peticiones HTTP a la API de TMDb.
   final dio = Dio(BaseOptions(
     baseUrl: 'https://api.themoviedb.org/3', // URL base de la API de TMDb.
     queryParameters: {
