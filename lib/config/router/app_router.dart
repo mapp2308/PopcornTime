@@ -3,7 +3,7 @@
 
 import 'package:go_router/go_router.dart'; // Importa la librería GoRouter para la navegación.
 
-import 'package:cinemapedia/presentation/screens/screens.dart';
+import 'package:popcorntime/presentation/screens/screens.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/', // Establece la ubicación inicial al inicio de la aplicación, en este caso la pantalla principal ('/').

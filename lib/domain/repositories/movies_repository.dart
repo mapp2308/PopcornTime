@@ -2,7 +2,7 @@
 // El propósito de esta clase es ser implementada por una clase que se encargue de acceder a los datos de las películas, 
 // ya sea desde una API, base de datos u otra fuente.
 
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:popcorntime/domain/entities/movie.dart';
 
 abstract class MoviesRepository {
 

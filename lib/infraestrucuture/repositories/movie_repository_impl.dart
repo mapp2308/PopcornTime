@@ -1,7 +1,7 @@
 
-import 'package:cinemapedia/domain/datasource/movies_datasource.dart';
-import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/domain/repositories/movies_repository.dart';
+import 'package:popcorntime/domain/datasource/movies_datasource.dart';
+import 'package:popcorntime/domain/entities/movie.dart';
+import 'package:popcorntime/domain/repositories/movies_repository.dart';
 
 // Implementación del repositorio de películas, que interactúa con el datasource para obtener datos de películas
 class MovieRepositoryImpl extends MoviesRepository {

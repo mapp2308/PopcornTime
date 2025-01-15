@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:popcorntime/domain/entities/movie.dart';
 
 import 'movies_providers.dart';
 

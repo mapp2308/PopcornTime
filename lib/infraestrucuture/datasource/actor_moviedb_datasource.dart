@@ -1,10 +1,10 @@
 // Esta clase implementa la interfaz `ActorsDatasource` y se encarga de obtener los actores de una película desde la API de The Movie Database (TMDb).
 
-import 'package:cinemapedia/config/constants/environment.dart';
-import 'package:cinemapedia/domain/datasource/actors_datasource.dart'; 
-import 'package:cinemapedia/domain/entities/actor.dart';
-import 'package:cinemapedia/infraestrucuture/mappers/actor_mapper.dart';
-import 'package:cinemapedia/infraestrucuture/moviedb/credits_response.dart';
+import 'package:popcorntime/config/constants/environment.dart';
+import 'package:popcorntime/domain/datasource/actors_datasource.dart'; 
+import 'package:popcorntime/domain/entities/actor.dart';
+import 'package:popcorntime/infraestrucuture/mappers/actor_mapper.dart';
+import 'package:popcorntime/infraestrucuture/moviedb/credits_response.dart';
 
 import 'package:dio/dio.dart'; // Importa Dio, la librería para hacer peticiones HTTP.
 

@@ -1,13 +1,13 @@
 // Esta clase implementa la interfaz `MoviesDatasource` y se encarga de obtener la información sobre las películas desde la API de The Movie Database (TMDb).
 
-import 'package:cinemapedia/domain/datasource/movies_datasource.dart';
-import 'package:cinemapedia/infraestrucuture/mappers/movie_mapper.dart';
-import 'package:cinemapedia/infraestrucuture/moviedb/movie_details.dart';
-import 'package:cinemapedia/infraestrucuture/moviedb/moviedb_response.dart';
+import 'package:popcorntime/domain/datasource/movies_datasource.dart';
+import 'package:popcorntime/infraestrucuture/mappers/movie_mapper.dart';
+import 'package:popcorntime/infraestrucuture/moviedb/movie_details.dart';
+import 'package:popcorntime/infraestrucuture/moviedb/moviedb_response.dart';
 import 'package:dio/dio.dart'; // Importa la librería Dio para hacer peticiones HTTP.
 
-import 'package:cinemapedia/config/constants/environment.dart'; // Importa las variables de entorno (como la API key).
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:popcorntime/config/constants/environment.dart'; // Importa las variables de entorno (como la API key).
+import 'package:popcorntime/domain/entities/movie.dart';
 
 class MoviedbDatasource extends MoviesDatasource {
 

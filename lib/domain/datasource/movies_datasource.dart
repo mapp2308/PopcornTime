@@ -1,7 +1,7 @@
 // Esta es una clase abstracta que define la interfaz para la obtención de datos de películas.
 // El propósito de esta clase es ser implementada por una clase que se encargue de obtener datos de películas desde una fuente de datos, como una API o base de datos.
 
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:popcorntime/domain/entities/movie.dart';
 
 abstract class MoviesDatasource {
 

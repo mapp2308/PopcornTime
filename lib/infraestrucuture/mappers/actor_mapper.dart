@@ -1,6 +1,6 @@
 
-import 'package:cinemapedia/domain/entities/actor.dart'; 
-import 'package:cinemapedia/infraestrucuture/moviedb/credits_response.dart';
+import 'package:popcorntime/domain/entities/actor.dart'; 
+import 'package:popcorntime/infraestrucuture/moviedb/credits_response.dart';
 
 // Esta clase tiene la responsabilidad de mapear los datos de la API a entidades de la aplicación.
 class ActorMapper {

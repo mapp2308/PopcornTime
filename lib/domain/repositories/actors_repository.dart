@@ -1,7 +1,7 @@
 // Esta es una clase abstracta que define la interfaz del repositorio de actores.
 // El propósito de esta clase es ser implementada por una clase que se encargue de acceder a los datos de los actores, ya sea desde una API, base de datos u otra fuente.
 
-import 'package:cinemapedia/domain/entities/actor.dart';
+import 'package:popcorntime/domain/entities/actor.dart';
 
 abstract class ActorsRepository {
 

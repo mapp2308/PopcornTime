@@ -1,10 +1,10 @@
-// Este archivo es el punto de entrada principal de la aplicación Cinemapedia.
+// Este archivo es el punto de entrada principal de la aplicación popcorntime.
 // Se encarga de cargar las configuraciones iniciales y luego inicia la aplicación.
 
 import 'package:flutter/material.dart';
-import 'package:cinemapedia/config/router/app_router.dart'; 
+import 'package:popcorntime/config/router/app_router.dart'; 
 import 'package:flutter_dotenv/flutter_dotenv.dart'; 
-import 'package:cinemapedia/config/theme/app_theme.dart'; 
+import 'package:popcorntime/config/theme/app_theme.dart'; 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Función main() que se ejecuta al iniciar la aplicación.

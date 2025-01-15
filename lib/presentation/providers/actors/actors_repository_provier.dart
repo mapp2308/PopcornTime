@@ -1,5 +1,5 @@
-import 'package:cinemapedia/infraestrucuture/datasource/actor_moviedb_datasource.dart';
-import 'package:cinemapedia/infraestrucuture/repositories/actor_repository_impl.dart';
+import 'package:popcorntime/infraestrucuture/datasource/actor_moviedb_datasource.dart';
+import 'package:popcorntime/infraestrucuture/repositories/actor_repository_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 

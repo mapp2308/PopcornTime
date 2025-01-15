@@ -1,6 +1,6 @@
-import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:popcorntime/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
-import 'package:cinemapedia/presentation/widgets/widgets.dart';
+import 'package:popcorntime/presentation/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
