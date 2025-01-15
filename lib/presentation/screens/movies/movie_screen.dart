@@ -100,12 +100,14 @@ class _MovieDetails extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text( movie.title, style: textStyles.titleLarge ),
-                    Text( movie.overview ),
+                    Text(movie.title, style: textStyles.titleLarge),
+                    Text(
+                      movie.overview.isNotEmpty ? movie.overview : 'La sinopsis todavía no está disponible',
+                      style: textStyles.bodyMedium,
+                    ),
                   ],
                 ),
-              )
-
+              ),
             ],
           ),
         ),
