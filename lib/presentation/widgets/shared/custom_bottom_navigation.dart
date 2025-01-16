@@ -10,6 +10,7 @@ class CustomBottomNavigation extends StatefulWidget {
 class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
   int _currentIndex = 0;
 
+
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;

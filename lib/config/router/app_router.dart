@@ -4,6 +4,7 @@
 import 'package:go_router/go_router.dart'; // Importa la librería GoRouter para la navegación.
 
 import 'package:popcorntime/presentation/screens/screens.dart';
+import 'package:popcorntime/presentation/screens/users/login_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/', // Establece la ubicación inicial al inicio de la aplicación, en este caso la pantalla principal ('/').
@@ -13,7 +14,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/', // Ruta para la pantalla principal.
       name: HomeScreen.name, // Nombre de la ruta, utilizado para la navegación.
-      builder: (context, state) => const HomeScreen(), // Construye el widget HomeScreen cuando se accede a esta ruta.
+      builder: (context, state) =>  LoginScreen(), // Construye el widget HomeScreen cuando se accede a esta ruta.
       routes: [
          // Definición de la ruta para la pantalla de detalle de película (MovieScreen).
          GoRoute(
