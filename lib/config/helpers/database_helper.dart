@@ -17,7 +17,7 @@ Future<Database> get database async {
 }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'app_database_v2.db');
+    String path = join(await getDatabasesPath(), 'app_db.db');
     return await openDatabase(
       path,
       version: 1,
@@ -31,7 +31,8 @@ Future<Database> get database async {
             direccion TEXT NOT NULL,
             telefono TEXT NOT NULL,
             peliculasFavoritas TEXT DEFAULT '',
-            peliculasPorVer TEXT DEFAULT ''
+            peliculasPorVer TEXT DEFAULT '',
+            isLogueado BOOLEAN DEFAULT false 
           )
         ''');
       },
@@ -71,6 +72,22 @@ Future<Database> get database async {
       whereArgs: [id],
     );
   }
+
+  Future<User?> getLoggedInUser() async {
+  final db = await database; // Obtener instancia de la base de datos.
+  final result = await db.query(
+    'users',
+    where: 'isLogueado = ?',
+    whereArgs: [1],
+  );
+
+  if (result.isNotEmpty) {
+    return User.fromMap(result.first); // Convertir el resultado en un objeto User.
+  }
+  return null; // Si no hay usuario logueado, regresar null.
+}
+
+
 }
 
 extension UserExtensions on User {
@@ -89,4 +106,6 @@ extension UserExtensions on User {
   void removePeliculaPorVer(String pelicula) {
     peliculasPorVer.remove(pelicula);
   }
+
 }
+

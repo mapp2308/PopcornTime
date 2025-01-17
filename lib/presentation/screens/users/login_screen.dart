@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:popcorntime/config/helpers/database_helper.dart';
-import 'package:popcorntime/infraestrucuture/provider/provider.dart';
 import 'package:popcorntime/presentation/screens/movies/home_screen.dart';
 import 'package:popcorntime/presentation/screens/users/register_screen.dart';
 
@@ -47,10 +46,9 @@ class LoginScreen extends StatelessWidget {
                 if (username.isNotEmpty && password.isNotEmpty) {
                   final user = await _dbHelper.loginUser(username, password);
                   if (user != null) {
-                    UserProvider.setUser(user); // Configura el usuario// Configura el usuario
-                    Navigator.push(
+                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(builder: (context) => HomeScreen(user: user)),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(

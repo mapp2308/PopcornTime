@@ -13,7 +13,7 @@ final appRouter = GoRouter(
     // Definición de la ruta para la pantalla de inicio (HomeScreen).
     GoRoute(
       path: '/', // Ruta para la pantalla principal.
-      name: HomeScreen.name, // Nombre de la ruta, utilizado para la navegación.
+      
       builder: (context, state) =>  LoginScreen(), // Construye el widget HomeScreen cuando se accede a esta ruta.
       routes: [
          // Definición de la ruta para la pantalla de detalle de película (MovieScreen).
