@@ -20,7 +20,7 @@ class GenersScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: moviesDatasource.getGenres(), // Obtener los géneros desde el datasource
+        future: moviesDatasource.getGenres(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -41,6 +41,7 @@ class GenersScreen extends StatelessWidget {
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
+                childAspectRatio: 3, // Reduce la altura de las tarjetas
               ),
               itemCount: categories.length,
               itemBuilder: (context, index) {
@@ -97,7 +98,6 @@ class MoviesByCategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyles = Theme.of(context).textTheme;
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(
@@ -126,12 +126,11 @@ class MoviesByCategoryPage extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  // Navega a la página de detalles de la película
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => MovieScreen(
-                        movieId: movie.id.toString(), // Pasa el movieId como String
+                        movieId: movie.id.toString(),
                       ),
                     ),
                   );
@@ -140,40 +139,39 @@ class MoviesByCategoryPage extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Row(
                     children: [
-                      SizedBox(
-                        width: size.width * 0.2,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.network(
-                            movie.posterPath,
-                            loadingBuilder: (context, child, loadingProgress) =>
-                                child,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.error),
-                          ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          movie.posterPath,
+                          width: 100,
+                          height: 150,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
                         ),
                       ),
                       const SizedBox(width: 10),
-                      SizedBox(
-                        width: size.width * 0.7,
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(movie.title, style: textStyles.titleMedium),
+                            const SizedBox(height: 5),
                             Text(
                               movie.overview.length > 100
                                   ? '${movie.overview.substring(0, 100)}...'
                                   : movie.overview,
+                              style: textStyles.bodyMedium,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            const SizedBox(height: 5),
                             Row(
                               children: [
-                                Icon(Icons.star_half_rounded,
-                                    color: Colors.yellow.shade800),
+                                Icon(Icons.star_half_rounded, color: Colors.yellow.shade800),
                                 const SizedBox(width: 5),
                                 Text(
                                   movie.voteAverage.toString(),
-                                  style: textStyles.bodyMedium!.copyWith(
-                                      color: Colors.yellow.shade900),
+                                  style: textStyles.bodyMedium!.copyWith(color: Colors.yellow.shade900),
                                 ),
                               ],
                             ),
