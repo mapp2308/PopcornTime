@@ -2,33 +2,54 @@
 // GoRouter es una librería que facilita la gestión de rutas y navegación en aplicaciones Flutter.
 
 import 'package:go_router/go_router.dart'; // Importa la librería GoRouter para la navegación.
-
+import 'package:popcorntime/config/helpers/database_helper.dart';
 import 'package:popcorntime/presentation/screens/screens.dart';
 import 'package:popcorntime/presentation/screens/users/login_screen.dart';
+import 'package:popcorntime/presentation/screens/movies/categories_screen.dart';
 
-final appRouter = GoRouter(
-  initialLocation: '/', // Establece la ubicación inicial al inicio de la aplicación, en este caso la pantalla principal ('/').
-  routes: [
-    
-    // Definición de la ruta para la pantalla de inicio (HomeScreen).
-    GoRoute(
-      path: '/', // Ruta para la pantalla principal.
-      
-      builder: (context, state) =>  LoginScreen(), // Construye el widget HomeScreen cuando se accede a esta ruta.
-      routes: [
-         // Definición de la ruta para la pantalla de detalle de película (MovieScreen).
-         GoRoute(
-          path: 'movie/:id', // Ruta que recibe un parámetro dinámico 'id' que se refiere a la ID de la película.
-          name: MovieScreen.name, // Nombre de la ruta, utilizado para la navegación.
-          builder: (context, state) {
-            // Obtiene el ID de la película de los parámetros de la ruta. Si no se encuentra, asigna 'no-id'.
-            final movieId = state.params['id'] ?? 'no-id';
 
-            // Construye el widget MovieScreen pasando el ID de la película como parámetro.
-            return MovieScreen(movieId: movieId);
-          },
-        ),
-      ]
-    ),
-  ]
-);
+Future<GoRouter> createAppRouter() async {
+  // Verifica si hay un usuario logueado
+  final DatabaseHelper dbHelper = DatabaseHelper();
+  final loggedInUser = await dbHelper.getLoggedInUser();
+
+  // Configura el GoRouter
+  return GoRouter(
+    initialLocation: loggedInUser != null ? '/' : '/login',
+    routes: [
+      // Ruta para el login
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => LoginScreen(),
+      ),
+
+      // Ruta para la pantalla principal (HomeScreen)
+      GoRoute(
+        path: '/',
+        builder: (context, state) => const HomeScreen(),
+      ),
+
+      // Ruta para la pantalla de géneros
+      GoRoute(
+        path: '/generos',
+        builder: (context, state) => GenersScreen(),
+      ),
+
+      // Ruta para la pantalla de detalles de la película
+      GoRoute(
+        path: '/movie/:id',
+        name: MovieScreen.name,
+        builder: (context, state) {
+          final movieId = state.params['id'] ?? 'no-id';
+          return MovieScreen(movieId: movieId);
+        },
+      ),
+
+      // Ruta para categorías de películas
+      GoRoute(
+        path: '/categories',
+        builder: (context, state) => GenersScreen(),
+      ),
+    ],
+  );
+}

@@ -1,4 +1,3 @@
-
 class User {
   final int? id;
   final String nombre;
@@ -8,6 +7,7 @@ class User {
   final String telefono;
   List<String> peliculasFavoritas;
   List<String> peliculasPorVer;
+  bool isLogueado;
 
   User({
     this.id,
@@ -16,6 +16,7 @@ class User {
     required this.contrasena,
     required this.direccion,
     required this.telefono,
+    this.isLogueado = false,
     List<String>? peliculasFavoritas,
     List<String>? peliculasPorVer,
   })  : peliculasFavoritas = peliculasFavoritas ?? [],
@@ -24,13 +25,15 @@ class User {
   // Convertir un User a un Map para la base de datos
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'nombre': nombre,
       'apellido': apellido,
       'contrasena': contrasena,
       'direccion': direccion,
       'telefono': telefono,
-      'peliculasFavoritas': peliculasFavoritas.join(','),
-      'peliculasPorVer': peliculasPorVer.join(','),
+      'peliculasFavoritas': peliculasFavoritas.join(','), // Convierte la lista en una cadena separada por comas
+      'peliculasPorVer': peliculasPorVer.join(','), // Convierte la lista en una cadena separada por comas
+      'isLogueado': isLogueado ? 1 : 0, // Almacena el valor booleano como entero (0 o 1)
     };
   }
 
@@ -43,8 +46,13 @@ class User {
       contrasena: map['contrasena'],
       direccion: map['direccion'],
       telefono: map['telefono'],
-      peliculasFavoritas: map['peliculasFavoritas'].isNotEmpty ? map['peliculasFavoritas'].split(',') : [],
-      peliculasPorVer: map['peliculasPorVer'].isNotEmpty ? map['peliculasPorVer'].split(',') : [],
+      isLogueado: map['isLogueado'] == 1, // Convierte 0/1 de la base de datos a un valor booleano
+      peliculasFavoritas: map['peliculasFavoritas'] != null && map['peliculasFavoritas'].isNotEmpty
+          ? map['peliculasFavoritas'].split(',') // Convierte la cadena separada por comas a una lista
+          : [],
+      peliculasPorVer: map['peliculasPorVer'] != null && map['peliculasPorVer'].isNotEmpty
+          ? map['peliculasPorVer'].split(',') // Convierte la cadena separada por comas a una lista
+          : [],
     );
   }
 }

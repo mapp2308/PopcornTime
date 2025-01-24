@@ -105,6 +105,8 @@ class MoviedbDatasource extends MoviesDatasource {
     return _jsonToMovies(response.data); // Convierte la respuesta JSON en una lista de películas y la devuelve.
   }
 
+  
+
   // Método para obtener una película por su ID.
   @override
   Future<Movie> getMovieById( String id ) async {
@@ -136,4 +138,25 @@ class MoviedbDatasource extends MoviesDatasource {
 
     return _jsonToMovies(response.data); // Convierte la respuesta JSON en una lista de películas y la devuelve.
   }
+
+  Future<List<Map<String, dynamic>>> getGenres() async {
+    final response = await dio.get('/genre/movie/list');
+
+    if (response.statusCode == 200) {
+      final genres = response.data['genres'] as List;
+      return genres.map((genre) => {'id': genre['id'], 'name': genre['name']}).toList();
+    } else {
+      throw Exception('Failed to load genres');
+    }
+  }
+
+  Future<List<Movie>> getMoviesByCategory({required int categoryId}) async {
+    final response = await dio.get('/discover/movie', queryParameters: {'with_genres': categoryId});
+    if (response.statusCode == 200) {
+      return _jsonToMovies(response.data); // Convierte la respuesta JSON en una lista de películas y la devuelve.
+    } else {
+      throw Exception('Failed to load movies');
+    }
+  }
+
 }

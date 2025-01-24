@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:popcorntime/domain/entities/user.dart';
 import 'package:popcorntime/presentation/providers/providers.dart';
+import 'package:popcorntime/presentation/widgets/drawer.dart';
 import 'package:popcorntime/presentation/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
-  final User user;
 
-  const HomeScreen({required this.user, super.key});
+
+  const HomeScreen({ super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: _HomeView(),
-      bottomNavigationBar: CustomBottomNavigation(),
+    return Scaffold(
+      body: const _HomeView(),
+      drawer: AppDrawer(),
+      bottomNavigationBar: const CustomBottomNavigation(),
     );
   }
 }
