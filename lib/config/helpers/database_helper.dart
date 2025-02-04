@@ -10,14 +10,14 @@ class DatabaseHelper {
 
   static Database? _database;
 
-Future<Database> get database async {
-  if (_database != null) return _database!;
-  _database = await _initDatabase();
-  return _database!;
-}
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
+  }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'app_db.db');
+    String path = join(await getDatabasesPath(), 'app_bd.db');
     return await openDatabase(
       path,
       version: 1,
@@ -27,6 +27,7 @@ Future<Database> get database async {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nombre TEXT NOT NULL,
             apellido TEXT NOT NULL,
+            username TEXT NOT NULL,
             contrasena TEXT NOT NULL,
             direccion TEXT NOT NULL,
             telefono TEXT NOT NULL,
@@ -44,14 +45,32 @@ Future<Database> get database async {
     return await db.insert('users', user.toMap());
   }
 
-  Future<User?> loginUser(String nombre, String contrasena) async {
+  Future<User?> loginUser(String username, String contrasena) async {
     final db = await database;
     final result = await db.query(
       'users',
-      where: 'nombre = ? AND contrasena = ?',
-      whereArgs: [nombre, contrasena],
+      where: 'username = ? AND contrasena = ?',
+      whereArgs: [username, contrasena],
     );
-    return result.isNotEmpty ? User.fromMap(result.first) : null;
+
+    if (result.isNotEmpty) {
+      // Marcar el usuario como logueado
+      User user = User.fromMap(result.first);
+      await _setUserLoggedInState(user.id!, true);
+      return user;
+    }
+
+    return null;
+  }
+
+  Future<bool> isUsernameTaken(String username) async {
+    final db = await database;
+    final result = await db.query(
+      'users', // Nombre de la tabla
+      where: 'username = ?',
+      whereArgs: [username],
+    );
+    return result.isNotEmpty;
   }
 
   Future<int> updateUser(User user) async {
@@ -74,20 +93,32 @@ Future<Database> get database async {
   }
 
   Future<User?> getLoggedInUser() async {
-  final db = await database; // Obtener instancia de la base de datos.
-  final result = await db.query(
-    'users',
-    where: 'isLogueado = ?',
-    whereArgs: [1],
-  );
+    final db = await database;
+    final result = await db.query(
+      'users',
+      where: 'isLogueado = ?',
+      whereArgs: [1],
+    );
 
-  if (result.isNotEmpty) {
-    return User.fromMap(result.first); // Convertir el resultado en un objeto User.
+    if (result.isNotEmpty) {
+      return User.fromMap(result.first);
+    }
+    return null;
   }
-  return null; // Si no hay usuario logueado, regresar null.
-}
 
+  Future<void> logoutUser(int id) async {
+    await _setUserLoggedInState(id, false);
+  }
 
+  Future<void> _setUserLoggedInState(int id, bool isLoggedIn) async {
+    final db = await database;
+    await db.update(
+      'users',
+      {'isLogueado': isLoggedIn ? 1 : 0},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }
 
 extension UserExtensions on User {
@@ -106,6 +137,4 @@ extension UserExtensions on User {
   void removePeliculaPorVer(String pelicula) {
     peliculasPorVer.remove(pelicula);
   }
-
 }
-
