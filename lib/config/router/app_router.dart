@@ -3,10 +3,11 @@
 
 import 'package:go_router/go_router.dart'; // Importa la librería GoRouter para la navegación.
 import 'package:popcorntime/config/helpers/database_helper.dart';
+import 'package:popcorntime/presentation/screens/movies/favoritos_screen.dart';
+import 'package:popcorntime/presentation/screens/movies/porver_screen.dart';
 import 'package:popcorntime/presentation/screens/screens.dart';
 import 'package:popcorntime/presentation/screens/users/login_screen.dart';
 import 'package:popcorntime/presentation/screens/movies/categories_screen.dart';
-
 
 Future<GoRouter> createAppRouter() async {
   // Verifica si hay un usuario logueado
@@ -47,8 +48,18 @@ Future<GoRouter> createAppRouter() async {
 
       // Ruta para categorías de películas
       GoRoute(
-        path: '/categories',
+        path: '/generos',
         builder: (context, state) => GenersScreen(),
+      ),
+
+      GoRoute(
+        path: '/por-ver',
+        builder: (context, state) => const MoviesWatchlistPage(),
+      ),
+
+      GoRoute(
+        path: '/favoritos',
+        builder: (context, state) => const MoviesFavoritesPage(),
       ),
     ],
   );

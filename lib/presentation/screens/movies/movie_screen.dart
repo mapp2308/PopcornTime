@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:popcorntime/config/helpers/database_helper.dart';
 
 import 'package:popcorntime/domain/entities/movie.dart';
 
@@ -19,12 +20,64 @@ class MovieScreen extends ConsumerStatefulWidget {
 }
 
 class MovieScreenState extends ConsumerState<MovieScreen> {
+  bool isFavorite = false;
+  bool isWatchlist = false;
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+
   @override
   void initState() {
     super.initState();
-
     ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId);
     ref.read(actorsByMovieProvider.notifier).loadActors(widget.movieId);
+    _checkMovieStatus();
+  }
+
+  Future<void> _checkMovieStatus() async {
+    final user = await _dbHelper.getLoggedInUser();
+    if (user != null) {
+      setState(() {
+        isFavorite = user.peliculasFavoritas.contains(widget.movieId);
+        isWatchlist = user.peliculasPorVer.contains(widget.movieId);
+      });
+    }
+  }
+
+  Future<void> toggleFavorite() async {
+    final user = await _dbHelper.getLoggedInUser();
+    if (user != null) {
+      setState(() {
+        if (isFavorite) {
+          user.peliculasFavoritas.remove(widget.movieId);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Eliminado de favoritos')));
+        } else {
+          user.peliculasFavoritas.add(widget.movieId);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Añadido a favoritos')));
+        }
+        isFavorite = !isFavorite;
+      });
+      await _dbHelper.updateUser(user);
+    }
+  }
+
+  Future<void> toggleWatchlist() async {
+    final user = await _dbHelper.getLoggedInUser();
+    if (user != null) {
+      setState(() {
+        if (isWatchlist) {
+          user.peliculasPorVer.remove(widget.movieId);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Eliminado de por ver')));
+        } else {
+          user.peliculasPorVer.add(widget.movieId);
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Añadido a por ver')));
+        }
+        isWatchlist = !isWatchlist;
+      });
+      await _dbHelper.updateUser(user);
+    }
   }
 
   @override
@@ -43,7 +96,13 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
           _CustomSliverAppBar(movie: movie),
           SliverList(
               delegate: SliverChildBuilderDelegate(
-                  (context, index) => _MovieDetails(movie: movie),
+                  (context, index) => _MovieDetails(
+                        movie: movie,
+                        isFavorite: isFavorite,
+                        isWatchlist: isWatchlist,
+                        toggleFavorite: toggleFavorite,
+                        toggleWatchlist: toggleWatchlist,
+                      ),
                   childCount: 1))
         ],
       ),
@@ -51,40 +110,20 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
-class _MovieDetails extends StatefulWidget {
+class _MovieDetails extends StatelessWidget {
   final Movie movie;
+  final bool isFavorite;
+  final bool isWatchlist;
+  final VoidCallback toggleFavorite;
+  final VoidCallback toggleWatchlist;
 
-  const _MovieDetails({required this.movie});
-
-  @override
-  _MovieDetailsState createState() => _MovieDetailsState();
-}
-
-class _MovieDetailsState extends State<_MovieDetails> {
-  bool isFavorite = false;
-  bool isWatchlist = false;
-
-  void toggleFavorite() {
-    setState(() {
-      if (!isFavorite) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Añadido a favoritos')),
-        );
-      }
-      isFavorite = !isFavorite;
-    });
-  }
-
-  void toggleWatchlist() {
-    setState(() {
-      if (!isWatchlist) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Añadido a por ver')),
-        );
-      }
-      isWatchlist = !isWatchlist;
-    });
-  }
+  const _MovieDetails({
+    required this.movie,
+    required this.isFavorite,
+    required this.isWatchlist,
+    required this.toggleFavorite,
+    required this.toggleWatchlist,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +141,7 @@ class _MovieDetailsState extends State<_MovieDetails> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.network(
-                  widget.movie.posterPath,
+                  movie.posterPath,
                   width: size.width * 0.3,
                 ),
               ),
@@ -112,10 +151,10 @@ class _MovieDetailsState extends State<_MovieDetails> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.movie.title, style: textStyles.titleLarge),
+                    Text(movie.title, style: textStyles.titleLarge),
                     Text(
-                      widget.movie.overview.isNotEmpty
-                          ? widget.movie.overview
+                      movie.overview.isNotEmpty
+                          ? movie.overview
                           : 'La sinopsis todavía no está disponible',
                       style: textStyles.bodyMedium,
                     ),
@@ -146,22 +185,7 @@ class _MovieDetailsState extends State<_MovieDetails> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Wrap(
-            children: [
-              ...widget.movie.genreIds.map((gender) => Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    child: Chip(
-                      label: Text(gender),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)),
-                    ),
-                  ))
-            ],
-          ),
-        ),
-        _ActorsByMovie(movieId: widget.movie.id.toString()),
+        _ActorsByMovie(movieId: movie.id.toString()),
         const SizedBox(height: 50),
       ],
     );

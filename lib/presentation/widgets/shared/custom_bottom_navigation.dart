@@ -44,14 +44,19 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
     // Busca el índice correspondiente a la ruta actual
     final int index = _routes.indexOf(currentLocation);
 
-    setState(() {
-      _currentIndex = index >= 0 ? index : 0; // Si la ruta no coincide, asigna el índice 0 por defecto
-    });
+    if (index >= 0) {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
   }
 
   void _onItemTapped(int index) {
     if (_currentIndex != index) {
       context.go(_routes[index]); // Navega a la ruta seleccionada
+      setState(() {
+        _currentIndex = index;
+      });
     }
   }
 
@@ -65,7 +70,9 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
       items: List.generate(_routes.length, (index) {
         return BottomNavigationBarItem(
           icon: Icon(
-            _currentIndex == index ? _selectedIcons[index] : _unselectedIcons[index],
+            _currentIndex == index
+                ? _selectedIcons[index]
+                : _unselectedIcons[index],
           ),
           label: index == 0
               ? 'Inicio'
