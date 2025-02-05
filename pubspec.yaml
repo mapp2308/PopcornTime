@@ -30,8 +30,6 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/icono.png"
-  adaptive_icon_background: "#FFD900"  # Equivalente a Color.fromARGB(255, 255, 217, 0)
-  adaptive_icon_foreground: "assets/icono.png"
 
 
 
