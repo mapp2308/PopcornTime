@@ -24,9 +24,22 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icono.png"
+  adaptive_icon_background: "#FFD900"  # Equivalente a Color.fromARGB(255, 255, 217, 0)
+  adaptive_icon_foreground: "assets/icono.png"
+
+
 
 flutter:
   uses-material-design: true
 
   assets:
     - .env
+    - assets/CAP.png
+    - assets/icono.png
+   

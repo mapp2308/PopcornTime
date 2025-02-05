@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:animate_do/animate_do.dart';
-import 'package:popcorntime/config/helpers/database_helper.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Riverpod para la gestión del estado
+import 'package:animate_do/animate_do.dart'; // Librería para animaciones
+import 'package:popcorntime/config/helpers/database_helper.dart'; // Base de datos local
+import 'package:popcorntime/domain/entities/movie.dart'; // Entidad Movie
+import 'package:popcorntime/presentation/providers/providers.dart'; // Proveedores de estado
+import 'package:popcorntime/presentation/providers/movies/movie_info_provider.dart'; // Proveedor de información de películas
 
-import 'package:popcorntime/domain/entities/movie.dart';
-
-import 'package:popcorntime/presentation/providers/providers.dart';
-import 'package:popcorntime/presentation/providers/movies/movie_info_provider.dart';
+// Esta pantalla (`MovieScreen`) muestra los detalles de una película específica.
+// - Obtiene la información de la película y el reparto usando `Riverpod`.
+// - Permite agregar o eliminar películas de la lista de favoritos y de "por ver".
+// - Usa `CustomScrollView` con `SliverAppBar` para una experiencia de navegación fluida.
+// - Incluye `_MovieDetails` para mostrar información y `_ActorsByMovie` para mostrar el reparto.
+// - `_CustomSliverAppBar` maneja la imagen de fondo con degradado para mejorar la visualización.
 
 class MovieScreen extends ConsumerStatefulWidget {
   static const name = 'movie-screen';
@@ -22,16 +27,17 @@ class MovieScreen extends ConsumerStatefulWidget {
 class MovieScreenState extends ConsumerState<MovieScreen> {
   bool isFavorite = false;
   bool isWatchlist = false;
-  final DatabaseHelper _dbHelper = DatabaseHelper();
+  final DatabaseHelper _dbHelper = DatabaseHelper(); // Instancia de base de datos
 
   @override
   void initState() {
     super.initState();
-    ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId);
-    ref.read(actorsByMovieProvider.notifier).loadActors(widget.movieId);
-    _checkMovieStatus();
+    ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId); // Carga la información de la película
+    ref.read(actorsByMovieProvider.notifier).loadActors(widget.movieId); // Carga los actores de la película
+    _checkMovieStatus(); // Verifica si la película está en favoritos o en la lista de por ver
   }
 
+  /// Verifica si la película está en favoritos o en la lista de "por ver"
   Future<void> _checkMovieStatus() async {
     final user = await _dbHelper.getLoggedInUser();
     if (user != null) {
@@ -42,18 +48,17 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     }
   }
 
+  /// Agrega o elimina la película de favoritos
   Future<void> toggleFavorite() async {
     final user = await _dbHelper.getLoggedInUser();
     if (user != null) {
       setState(() {
         if (isFavorite) {
           user.peliculasFavoritas.remove(widget.movieId);
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Eliminado de favoritos')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Eliminado de favoritos')));
         } else {
           user.peliculasFavoritas.add(widget.movieId);
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Añadido a favoritos')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Añadido a favoritos')));
         }
         isFavorite = !isFavorite;
       });
@@ -61,18 +66,17 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     }
   }
 
+  /// Agrega o elimina la película de la lista de "por ver"
   Future<void> toggleWatchlist() async {
     final user = await _dbHelper.getLoggedInUser();
     if (user != null) {
       setState(() {
         if (isWatchlist) {
           user.peliculasPorVer.remove(widget.movieId);
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Eliminado de por ver')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Eliminado de por ver')));
         } else {
           user.peliculasPorVer.add(widget.movieId);
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('Añadido a por ver')));
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Añadido a por ver')));
         }
         isWatchlist = !isWatchlist;
       });
@@ -86,14 +90,14 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
 
     if (movie == null) {
       return const Scaffold(
-          body: Center(child: CircularProgressIndicator(strokeWidth: 2)));
+          body: Center(child: CircularProgressIndicator(strokeWidth: 2))); // Muestra un indicador de carga si la película aún no se ha cargado
     }
 
     return Scaffold(
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),
         slivers: [
-          _CustomSliverAppBar(movie: movie),
+          _CustomSliverAppBar(movie: movie), // Barra superior con la imagen de la película
           SliverList(
               delegate: SliverChildBuilderDelegate(
                   (context, index) => _MovieDetails(
@@ -110,6 +114,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
+// Widget que muestra los detalles de la película
 class _MovieDetails extends StatelessWidget {
   final Movie movie;
   final bool isFavorite;
@@ -139,11 +144,8 @@ class _MovieDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  movie.posterPath,
-                  width: size.width * 0.3,
-                ),
+                borderRadius: BorderRadius.circular(20), // Borde redondeado para la imagen de la película
+                child: Image.network(movie.posterPath, width: size.width * 0.3),
               ),
               const SizedBox(width: 10),
               SizedBox(
@@ -153,28 +155,18 @@ class _MovieDetails extends StatelessWidget {
                   children: [
                     Text(movie.title, style: textStyles.titleLarge),
                     Text(
-                      movie.overview.isNotEmpty
-                          ? movie.overview
-                          : 'La sinopsis todavía no está disponible',
+                      movie.overview.isNotEmpty ? movie.overview : 'La sinopsis todavía no está disponible',
                       style: textStyles.bodyMedium,
                     ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(
-                              isFavorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color: Colors.red),
+                          icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border, color: Colors.red),
                           onPressed: toggleFavorite,
                         ),
                         IconButton(
-                          icon: Icon(
-                              isWatchlist
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.blue),
+                          icon: Icon(isWatchlist ? Icons.visibility : Icons.visibility_off, color: Colors.blue),
                           onPressed: toggleWatchlist,
                         ),
                       ],
@@ -185,13 +177,14 @@ class _MovieDetails extends StatelessWidget {
             ],
           ),
         ),
-        _ActorsByMovie(movieId: movie.id.toString()),
+        _ActorsByMovie(movieId: movie.id.toString()), // Sección de actores
         const SizedBox(height: 50),
       ],
     );
   }
 }
 
+// Widget que muestra la lista de actores
 class _ActorsByMovie extends ConsumerWidget {
   final String movieId;
 
@@ -220,32 +213,15 @@ class _ActorsByMovie extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Actor Photo
                 FadeInRight(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      actor.profilePath,
-                      height: 180,
-                      width: 135,
-                      fit: BoxFit.cover,
-                    ),
+                    child: Image.network(actor.profilePath, height: 180, width: 135, fit: BoxFit.cover),
                   ),
                 ),
-
-                // Nombre
-                const SizedBox(
-                  height: 5,
-                ),
-
+                const SizedBox(height: 5),
                 Text(actor.name, maxLines: 2),
-                Text(
-                  actor.character ?? '',
-                  maxLines: 2,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      overflow: TextOverflow.ellipsis),
-                ),
+                Text(actor.character ?? '', maxLines: 2, style: const TextStyle(fontWeight: FontWeight.bold, overflow: TextOverflow.ellipsis)),
               ],
             ),
           );
@@ -254,6 +230,7 @@ class _ActorsByMovie extends ConsumerWidget {
     );
   }
 }
+
 
 class _CustomSliverAppBar extends StatelessWidget {
   final Movie movie;
